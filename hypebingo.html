@@ -1,70 +1,104 @@
-import React, { useState } from 'react';
-import { AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-
-const words = [
-  "Revolutionary", "Game-Changer", "Disruptive", "Next Big Thing",
-  "Innovative", "Groundbreaking", "Unicorn", "Paradigm Shift",
-  "FOMO", "Moonshot", "Exponential Growth", "Cutting-Edge",
-  "Transformative", "Visionary", "Breakthrough", "Future-Proof"
-];
-
-const BingoCell = ({ word, isSelected, onClick }) => (
-  <div 
-    className={`border p-2 text-center cursor-pointer ${isSelected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
-    onClick={onClick}
-  >
-    {word}
-  </div>
-);
-
-const HypeBingo = () => {
-  const [selected, setSelected] = useState(new Array(16).fill(false));
-  const [lines, setLines] = useState(0);
-
-  const checkBingo = (newSelected) => {
-    const winningCombos = [
-      [0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15], // Rows
-      [0,4,8,12], [1,5,9,13], [2,6,10,14], [3,7,11,15], // Columns
-      [0,5,10,15], [3,6,9,12] // Diagonals
-    ];
-
-    return winningCombos.filter(combo => 
-      combo.every(index => newSelected[index])
-    ).length;
-  };
-
-  const handleClick = (index) => {
-    const newSelected = [...selected];
-    newSelected[index] = !newSelected[index];
-    setSelected(newSelected);
-    setLines(checkBingo(newSelected));
-  };
-
-  return (
-    <div className="max-w-md mx-auto mt-8">
-      <h2 className="text-2xl font-bold mb-4 text-center">Tech Hype Bingo</h2>
-      <div className="grid grid-cols-4 gap-2 mb-4">
-        {words.map((word, index) => (
-          <BingoCell 
-            key={index} 
-            word={word} 
-            isSelected={selected[index]} 
-            onClick={() => handleClick(index)} 
-          />
-        ))}
-      </div>
-      {lines > 0 && (
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Bingo!</AlertTitle>
-          <AlertDescription>
-            You've completed {lines} line{lines > 1 ? 's' : ''}!
-          </AlertDescription>
-        </Alert>
-      )}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Hype Bingo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+        }
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .bingo-cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .bingo-cell.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #bingo-alert {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tech Hype Bingo</h1>
+        <div class="bingo-grid" id="bingo-grid"></div>
+        <div id="bingo-alert"></div>
     </div>
-  );
-};
 
-export default HypeBingo;
+    <script>
+        const words = [
+            "Revolutionary", "Game-Changer", "Disruptive", "Next Big Thing",
+            "Innovative", "Groundbreaking", "Unicorn", "Paradigm Shift",
+            "FOMO", "Moonshot", "Exponential Growth", "Cutting-Edge",
+            "Transformative", "Visionary", "Breakthrough", "Future-Proof"
+        ];
+
+        const grid = document.getElementById('bingo-grid');
+        const alert = document.getElementById('bingo-alert');
+        let selected = new Array(16).fill(false);
+
+        words.forEach((word, index) => {
+            const cell = document.createElement('div');
+            cell.className = 'bingo-cell';
+            cell.textContent = word;
+            cell.addEventListener('click', () => toggleCell(index));
+            grid.appendChild(cell);
+        });
+
+        function toggleCell(index) {
+            selected[index] = !selected[index];
+            grid.children[index].classList.toggle('selected');
+            checkBingo();
+        }
+
+        function checkBingo() {
+            const winningCombos = [
+                [0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15], // Rows
+                [0,4,8,12], [1,5,9,13], [2,6,10,14], [3,7,11,15], // Columns
+                [0,5,10,15], [3,6,9,12] // Diagonals
+            ];
+
+            const lines = winningCombos.filter(combo => 
+                combo.every(index => selected[index])
+            ).length;
+
+            if (lines > 0) {
+                alert.textContent = `Bingo! You've completed ${lines} line${lines > 1 ? 's' : ''}!`;
+                alert.style.display = 'block';
+            } else {
+                alert.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
