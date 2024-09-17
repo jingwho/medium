@@ -13,6 +13,11 @@
         h1 {
             color: #333;
         }
+        #instructions {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #555;
+        }
         #game-container {
             margin-top: 20px;
         }
@@ -32,39 +37,20 @@
             perspective: 1000px;
             cursor: pointer;
             position: relative;
-        }
-        .card-inner {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            border-radius: 8px;
-        }
-        .card.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
+            background-color: #000;
+            color: #fff;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px;
-            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
         }
-        .card-front {
-            background-color: #fff;
-            color: #333;
+        .card.correct {
+            background-color: #28a745 !important;
         }
-        .card-back {
-            background-color: #007BFF;
-            color: white;
-            transform: rotateY(180deg);
+        .card.incorrect {
+            background-color: #dc3545 !important;
         }
         #timer {
             font-size: 20px;
@@ -75,14 +61,12 @@
             margin-top: 20px;
             font-size: 18px;
             height: 24px;
+            color: #333;
         }
-        .correct {
-            background-color: #28a745 !important;
-            color: white !important;
-        }
-        .incorrect {
-            background-color: #dc3545 !important;
-            color: white !important;
+        #lives {
+            margin-top: 10px;
+            font-size: 24px;
+            color: #ff0000;
         }
         #reset-button {
             margin-top: 20px;
@@ -94,19 +78,39 @@
             border: none;
             border-radius: 5px;
         }
+        #celebration {
+            margin-top: 20px;
+            display: none;
+        }
+        #warning {
+            color: #ff0000;
+            font-weight: bold;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <h1>Technology Maturity vs. Product-Market Fit Flip Card Game</h1>
+    <div id="instructions">
+        Choose a deck to play: <strong>Technology Maturity</strong> or <strong>Product-Market Fit</strong>.
+    </div>
     <div id="game-container">
         <div class="deck-choice">
             <button onclick="startGame('maturity')">Technology Maturity Deck</button>
             <button onclick="startGame('pmf')">Product-Market Fit Deck</button>
         </div>
+        <div id="lives">
+            Lives: ★★★
+        </div>
         <div id="timer"></div>
+        <div id="warning">Hurry up! Time is almost up!</div>
         <div id="message"></div>
         <div id="cards-container"></div>
         <button id="reset-button" onclick="resetGame()">Try Again</button>
+        <div id="celebration">
+            <img src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" alt="Celebration" width="200">
+            <p>Congratulations! You Won!</p>
+        </div>
     </div>
 
     <script>
@@ -138,75 +142,68 @@
 
         let selectedDeck = [];
         let correctSelections = [];
+        let mistakes = 0;
         let timerInterval;
         let timeLeft = 30;
+        let deckType = '';
 
-        function startGame(deckType) {
+        function startGame(deck) {
+            deckType = deck;
             document.getElementById('message').innerText = "";
+            document.getElementById('celebration').style.display = 'none';
             document.getElementById('reset-button').style.display = 'none';
-            selectedDeck = deckType === 'maturity' ? maturityIndicators : pmfIndicators;
-            shuffleArray(selectedDeck);
-            generateCards(selectedDeck, deckType);
+            document.getElementById('warning').style.display = 'none';
+            mistakes = 0;
+            updateLives();
+            selectedDeck = deck === 'maturity' ? maturityIndicators : pmfIndicators;
+            shuffleArray(maturityIndicators);
+            shuffleArray(pmfIndicators);
+            generateCards();
             startTimer();
         }
 
-        function generateCards(deck, deckType) {
+        function generateCards() {
             const cardsContainer = document.getElementById('cards-container');
             cardsContainer.innerHTML = '';
-            // Mix both correct and incorrect indicators
-            let allIndicators = [];
-            if (deckType === 'maturity') {
-                allIndicators = [...maturityIndicators, ...pmfIndicators];
-            } else {
-                allIndicators = [...pmfIndicators, ...maturityIndicators];
-            }
+            // Combine both decks and shuffle
+            let allIndicators = [...maturityIndicators, ...pmfIndicators];
             shuffleArray(allIndicators);
-            allIndicators = allIndicators.slice(0, 20); // Total 20 cards
-
+            // Display all indicators
             allIndicators.forEach(indicator => {
                 const card = document.createElement('div');
                 card.classList.add('card');
-                card.onclick = () => handleCardClick(card, indicator, deckType);
-                card.innerHTML = `
-                    <div class="card-inner">
-                        <div class="card-front">?</div>
-                        <div class="card-back">${indicator}</div>
-                    </div>
-                `;
+                card.innerText = indicator;
+                card.onclick = () => handleCardClick(card, indicator);
                 cardsContainer.appendChild(card);
             });
         }
 
-        function handleCardClick(card, indicator, deckType) {
-            if (card.classList.contains('flipped')) return; // Prevent clicking already flipped cards
-            card.classList.add('flipped');
-            if (isCorrect(indicator, deckType)) {
+        function handleCardClick(card, indicator) {
+            if (card.classList.contains('correct') || card.classList.contains('incorrect')) return; // Prevent re-clicking
+            if (selectedDeck.includes(indicator)) {
                 card.classList.add('correct');
-                correctSelections.push(card);
+                correctSelections.push(indicator);
                 checkWin();
             } else {
                 card.classList.add('incorrect');
-                setTimeout(() => {
-                    card.classList.remove('incorrect', 'flipped');
-                }, 1000);
-            }
-        }
-
-        function isCorrect(indicator, deckType) {
-            if (deckType === 'maturity') {
-                return maturityIndicators.includes(indicator);
-            } else {
-                return pmfIndicators.includes(indicator);
+                mistakes++;
+                updateLives();
+                if (mistakes >= 3) {
+                    endGame(false);
+                }
             }
         }
 
         function checkWin() {
-            const totalCorrect = deckType === 'maturity' ? maturityIndicators.length : pmfIndicators.length;
-            if (correctSelections.length >= totalCorrect) {
+            if (correctSelections.length === selectedDeck.length) {
                 clearInterval(timerInterval);
-                document.getElementById('message').innerText = "Congratulations! You've achieved product-market fit.";
-                document.getElementById('reset-button').style.display = 'block';
+                endGame(true);
             }
+        }
+
+        function updateLives() {
+            const livesContainer = document.getElementById('lives');
+            livesContainer.innerHTML = 'Lives: ' + '★'.repeat(3 - mistakes) + '☆'.repeat(mistakes);
         }
 
         function startTimer() {
@@ -217,31 +214,34 @@
                 timeLeft--;
                 document.getElementById('timer').innerText = `Time Left: ${timeLeft}s`;
                 if (timeLeft === 5) {
-                    document.getElementById('timer').style.color = '#ff0000';
-                    showWarning();
+                    document.getElementById('warning').style.display = 'block';
                 }
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    resetGame();
+                    endGame(false);
                 }
             }, 1000);
         }
 
-        function showWarning() {
-            const warning = document.createElement('div');
-            warning.innerText = "Hurry up! Time is almost up!";
-            warning.style.color = '#ff0000';
-            warning.style.fontWeight = 'bold';
-            warning.style.marginTop = '10px';
-            document.getElementById('message').appendChild(warning);
+        function endGame(won) {
+            clearInterval(timerInterval);
+            if (won) {
+                document.getElementById('message').innerText = "Congratulations! You've achieved your goal.";
+                document.getElementById('celebration').style.display = 'block';
+            } else {
+                document.getElementById('message').innerText = "Game Over! Try again.";
+                document.getElementById('reset-button').style.display = 'block';
+            }
         }
 
         function resetGame() {
-            clearInterval(timerInterval);
             document.getElementById('cards-container').innerHTML = '';
             document.getElementById('timer').innerText = '';
-            document.getElementById('message').innerText = "Time's up! Try again.";
-            document.getElementById('reset-button').style.display = 'block';
+            document.getElementById('message').innerText = "";
+            document.getElementById('celebration').style.display = 'none';
+            document.getElementById('warning').style.display = 'none';
+            document.getElementById('reset-button').style.display = 'none';
+            document.getElementById('lives').innerHTML = 'Lives: ★★★';
         }
 
         function shuffleArray(array) {
