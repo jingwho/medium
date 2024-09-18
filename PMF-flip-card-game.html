@@ -121,9 +121,14 @@
         <div id="cards-container"></div>
         <button id="reset-button" onclick="resetGame()">Try Again</button>
         <div id="celebration">
-            <img src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" alt="Celebration" width="200">
+            <img src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" alt="Celebration" width="300"> <!-- Make the celebration gif bigger -->
             <p>Congratulations! You Won!</p>
         </div>
+        
+        <div id="failure" style="display:none;">
+            <img src="https://media.giphy.com/media/l2JehQ2GitHGdVG9y/giphy.gif" alt="Failure" width="300">
+            <p>Oops! You Lost! Try Again.</p>
+</div>
     </div>
 
     <script>
@@ -234,9 +239,12 @@
             if (won) {
                 document.getElementById('message').innerText = "Congratulations! You've achieved your goal.";
                 document.getElementById('celebration').style.display = 'block';
+                document.getElementById('failure').style.display = 'none';  // Hide failure gif
             } else {
                 document.getElementById('message').innerText = "Game Over! Try again.";
                 document.getElementById('reset-button').style.display = 'block';
+                document.getElementById('failure').style.display = 'block'; // Show failure gif
+                document.getElementById('celebration').style.display = 'none';  // Hide celebration gif
             }
         }
 
