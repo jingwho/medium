@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Technology Maturity vs. Product-Market Fit Flip Card Game</title>
     <style>
         body {
@@ -12,6 +13,7 @@
         }
         h1 {
             color: #333;
+            margin-bottom: 10px;
         }
         #instructions {
             margin-top: 10px;
@@ -21,8 +23,18 @@
         #game-container {
             margin-top: 20px;
         }
-        .deck-choice {
+        .deck-choice button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
             margin: 10px;
+        }
+        .deck-choice button:hover {
+            background-color: #0056b3;
         }
         #cards-container {
             display: flex;
@@ -34,9 +46,6 @@
             width: 150px;
             height: 100px;
             margin: 10px;
-            perspective: 1000px;
-            cursor: pointer;
-            position: relative;
             background-color: #000;
             color: #fff;
             border-radius: 8px;
@@ -44,6 +53,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
             transition: background-color 0.3s;
         }
         .card.correct {
@@ -72,11 +82,11 @@
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
-            display: none;
             cursor: pointer;
             background-color: #ffc107;
             border: none;
             border-radius: 5px;
+            display: none;
         }
         #celebration {
             margin-top: 20px;
@@ -92,12 +102,12 @@
 <body>
     <h1>Technology Maturity vs. Product-Market Fit Flip Card Game</h1>
     <div id="instructions">
-        Choose a deck to play: <strong>Technology Maturity</strong> or <strong>Product-Market Fit</strong>.
+        Choose a deck to play: <strong>Technology Maturity</strong> or <strong>Product-Market Fit</strong>. You have three lives to complete this game within 30 seconds. Enjoy!
     </div>
     <div id="game-container">
         <div class="deck-choice">
-            <button onclick="startGame('maturity')">Technology Maturity Deck</button>
-            <button onclick="startGame('pmf')">Product-Market Fit Deck</button>
+            <button onclick="startGame('maturity')">Play The Technology Maturity Deck</button>
+            <button onclick="startGame('pmf')">Play The Product-Market Fit Deck</button>
         </div>
         <div id="lives">
             Lives: ★★★
@@ -114,17 +124,14 @@
     </div>
 
     <script>
+        // Simplify to 12 key indicators
         const maturityIndicators = [
             "Reliability",
             "Scalability",
             "Ease of Integration",
-            "Standardization",
             "Efficiency",
-            "User-Friendly Design",
-            "Robustness",
             "Security",
-            "Maintenance Requirements",
-            "Flexibility"
+            "Maintenance Requirements"
         ];
 
         const pmfIndicators = [
@@ -133,10 +140,6 @@
             "Positive User Feedback",
             "Market Demand Alignment",
             "Repeat Purchases",
-            "Low Churn Rate",
-            "Strong Word-of-Mouth",
-            "Product Usage Frequency",
-            "Revenue Growth",
             "User Retention"
         ];
 
@@ -239,17 +242,4 @@
             document.getElementById('timer').innerText = '';
             document.getElementById('message').innerText = "";
             document.getElementById('celebration').style.display = 'none';
-            document.getElementById('warning').style.display = 'none';
-            document.getElementById('reset-button').style.display = 'none';
-            document.getElementById('lives').innerHTML = 'Lives: ★★★';
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-    </script>
-</body>
-</html>
+            document.getElementById
