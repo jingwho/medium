@@ -235,15 +235,21 @@
         }
 
         function endGame(won) {
-            clearInterval(timerInterval);
+            clearInterval(timerInterval);  // Stops the game timer
+        
+            // Clear the cards from the screen
+            document.getElementById('cards-container').innerHTML = ''; // This removes all the cards
+        
+            // Show appropriate gif based on the game outcome
             if (won) {
                 document.getElementById('message').innerText = "Congratulations! You've achieved your goal.";
-                document.getElementById('celebration').style.display = 'block';
+                document.getElementById('celebration').style.display = 'block';  // Show celebration gif
                 document.getElementById('failure').style.display = 'none';  // Hide failure gif
+                document.getElementById('reset-button').style.display = 'none';  // Hide reset button when they win
             } else {
                 document.getElementById('message').innerText = "Game Over! Try again.";
-                document.getElementById('reset-button').style.display = 'block';
-                document.getElementById('failure').style.display = 'block'; // Show failure gif
+                document.getElementById('reset-button').style.display = 'block';  // Show reset button when they lose
+                document.getElementById('failure').style.display = 'block';  // Show failure gif
                 document.getElementById('celebration').style.display = 'none';  // Hide celebration gif
             }
         }
