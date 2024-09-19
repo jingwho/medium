@@ -160,6 +160,8 @@
 
         function startGame(deck) {
             deckType = deck;
+            mistakes = 0;
+            correctSelections = [];
             document.getElementById('message').innerText = "";
             document.getElementById('celebration').style.display = 'none';
             document.getElementById('reset-button').style.display = 'none';
@@ -191,6 +193,7 @@
         }
 
         function handleCardClick(card, indicator) {
+            console.log(card, indicator)
             if (card.classList.contains('correct') || card.classList.contains('incorrect')) return; // Prevent re-clicking
             if (selectedDeck.includes(indicator)) {
                 card.classList.add('correct');
@@ -219,6 +222,7 @@
         }
 
         function startTimer() {
+            return;
             clearInterval(timerInterval);
             timeLeft = 30;
             document.getElementById('timer').innerText = `Time Left: ${timeLeft}s`;
@@ -263,6 +267,7 @@
             document.getElementById('warning').style.display = 'none';
             document.getElementById('reset-button').style.display = 'none';
             document.getElementById('lives').innerHTML = 'Lives: ★★★';
+            startGame(deckType);
         }
 
         function shuffleArray(array) {
