@@ -105,7 +105,7 @@
 <body>
     <h1>Technology Maturity vs. Product-Market Fit Flip Card Game</h1>
     <div id="instructions">
-        Choose a deck to play: <strong>Technology Maturity</strong> or <strong>Product-Market Fit</strong>. You have three lives to complete this game within 30 seconds. Enjoy!
+        Choose a deck to play: <strong>Technology Maturity</strong> or <strong>Product-Market Fit</strong>. You have three lives to complete this game. Enjoy!
     </div>
     <div id="game-container">
         <div class="deck-choice">
@@ -119,7 +119,6 @@
         <div id="warning">Hurry up! Time is almost up!</div>
         <div id="message"></div>
         <div id="cards-container"></div>
-        <button id="reset-button" onclick="resetGame()">Try Again</button>
         <div id="celebration">
             <img src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" alt="Celebration" width="300"> <!-- Make the celebration gif bigger -->
             <p>Congratulations! You Won!</p>
@@ -155,7 +154,6 @@
         let correctSelections = [];
         let mistakes = 0;
         let timerInterval;
-        let timeLeft = 30;
         let deckType = '';
 
         function startGame(deck) {
@@ -164,7 +162,6 @@
             correctSelections = [];
             document.getElementById('message').innerText = "";
             document.getElementById('celebration').style.display = 'none';
-            document.getElementById('reset-button').style.display = 'none';
             document.getElementById('warning').style.display = 'none';
             document.getElementById('failure').style.display = 'none';
             mistakes = 0;
@@ -173,7 +170,6 @@
             shuffleArray(maturityIndicators);
             shuffleArray(pmfIndicators);
             generateCards();
-            startTimer();
         }
 
         function generateCards() {
@@ -193,7 +189,6 @@
         }
 
         function handleCardClick(card, indicator) {
-            console.log(card, indicator)
             if (card.classList.contains('correct') || card.classList.contains('incorrect')) return; // Prevent re-clicking
             if (selectedDeck.includes(indicator)) {
                 card.classList.add('correct');
@@ -221,26 +216,8 @@
             livesContainer.innerHTML = 'Lives: ' + '★'.repeat(3 - mistakes) + '☆'.repeat(mistakes);
         }
 
-        function startTimer() {
-            return;
-            clearInterval(timerInterval);
-            timeLeft = 30;
-            document.getElementById('timer').innerText = `Time Left: ${timeLeft}s`;
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = `Time Left: ${timeLeft}s`;
-                if (timeLeft === 5) {
-                    document.getElementById('warning').style.display = 'block';
-                }
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    endGame(false);
-                }
-            }, 1000);
-        }
-
         function endGame(won) {
-            clearInterval(timerInterval);  // Stops the game timer
+            // clearInterval(timerInterval);  // Stops the game timer
         
             // Clear the cards from the screen
             document.getElementById('cards-container').innerHTML = ''; // This removes all the cards
@@ -250,10 +227,8 @@
                 document.getElementById('message').innerText = "Congratulations! You've achieved your goal.";
                 document.getElementById('celebration').style.display = 'block';  // Show celebration gif
                 document.getElementById('failure').style.display = 'none';  // Hide failure gif
-                document.getElementById('reset-button').style.display = 'none';  // Hide reset button when they win
             } else {
                 document.getElementById('message').innerText = "Game Over! Try again.";
-                document.getElementById('reset-button').style.display = 'block';  // Show reset button when they lose
                 document.getElementById('failure').style.display = 'block';  // Show failure gif
                 document.getElementById('celebration').style.display = 'none';  // Hide celebration gif
             }
@@ -265,7 +240,6 @@
             document.getElementById('message').innerText = "";
             document.getElementById('celebration').style.display = 'none';
             document.getElementById('warning').style.display = 'none';
-            document.getElementById('reset-button').style.display = 'none';
             document.getElementById('lives').innerHTML = 'Lives: ★★★';
             startGame(deckType);
         }
