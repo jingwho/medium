@@ -126,6 +126,7 @@
         
         <div id="failure" style="display:none;">
             <img src="https://media.giphy.com/media/l2JehQ2GitHGdVG9y/giphy.gif" alt="Failure" width="300">
+            <p>Oops! You Lost! Try Again.</p>
 </div>
     </div>
 
@@ -227,6 +228,7 @@
                 document.getElementById('celebration').style.display = 'block';  // Show celebration gif
                 document.getElementById('failure').style.display = 'none';  // Hide failure gif
             } else {
+                document.getElementById('message').innerText = "Game Over! Try again.";
                 document.getElementById('failure').style.display = 'block';  // Show failure gif
                 document.getElementById('celebration').style.display = 'none';  // Hide celebration gif
             }
@@ -251,3 +253,4 @@
     </script>
 </body>
 </html>
+Collapse
