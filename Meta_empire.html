@@ -589,9 +589,6 @@
                 .join("line")
                 .attr("stroke-width", d => d.value || 3);
             
-            if (activeLayer === 1 || activeLayer === 2) {
-                link.attr("marker-end", "url(#arrow)");
-            }
             
             // Special highlight for the Social Graph if present
             if (activeLayer === 4 || activeLayer === 5) {
