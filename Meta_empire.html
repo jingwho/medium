@@ -587,7 +587,8 @@
                 .selectAll("line")
                 .data(currentLinks)
                 .join("line")
-                .attr("stroke-width", d => d.value || 3);
+                .attr("stroke-width", d => d.value || 2);
+                .attr("stroke-dasharray", d => (activeLayer === 1 || activeLayer === 2) ? "5,5" : null)
             
             
             // Special highlight for the Social Graph if present
