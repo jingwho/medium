@@ -522,7 +522,7 @@
             if (activeLayer === 3) {
                 // For Layer 3, use dynamic layout
                 simulation = d3.forceSimulation(currentNodes)
-                    .force("charge", d3.forceManyBody().strength(-10))
+                    .force("charge", d3.forceManyBody().strength(-0))
                     .force("center", d3.forceCenter(width / 2, height / 2))
                     .force("collision", d3.forceCollide().radius(d => d.radius * 1.3));
             } else if (activeLayer === 4 || activeLayer === 5) {
